@@ -1,5 +1,5 @@
-from .serializers import PatientSerializer
-from .models import Patient
+from .serializers import PatientSerializer, InsuranceSerializer, MedicalRecordSerializer
+from .models import Patient, Insurance, MedicalRecord
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -60,3 +60,26 @@ def detail_patient(request, pk):
         patient.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 """
+
+class ListInsuranceview(ListAPIView, CreateAPIView):
+    allowed_methods = ['GET', 'POST']
+    serializer_class = InsuranceSerializer
+    queryset = Insurance.objects.all()
+
+class DetailInsuranceView(RetrieveUpdateDestroyAPIView):
+    allowed_methods = ['GET', 'PUT', 'DELETE']
+
+    serializer_class = InsuranceSerializer
+    queryset = Insurance.objects.all()
+
+
+class ListMedicalRecordview(ListAPIView, CreateAPIView):
+    allowed_methods = ['GET', 'POST']
+    serializer_class = MedicalRecordSerializer
+    queryset = MedicalRecord.objects.all()
+
+class DetailMedicalRecordView(RetrieveUpdateDestroyAPIView):
+    allowed_methods = ['GET', 'PUT', 'DELETE']
+
+    serializer_class = MedicalRecordSerializer
+    queryset = MedicalRecord.objects.all()

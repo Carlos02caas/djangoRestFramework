@@ -20,8 +20,3 @@ class DoctorAvailability(models.Model):
     end_date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-
-class MedicalNote(models.Model):
-    doctor = models.ForeignKey(Doctor, related_name='medical_note', on_delete=models.CASCADE)
-    note = models.TextField()
-    date = models.DateField()
