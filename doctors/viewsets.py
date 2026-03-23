@@ -1,10 +1,14 @@
-from rest_framework import viewsets, decorators, response, status
+from rest_framework import viewsets, decorators, response, permissions
 from .serializers import DoctorSerializer, DepartmentSerializer, DoctorAvailabilitySerializer
 from .models import Doctor, Department, DoctorAvailability
+from .permissions import IsDoctor
 
 class DoctorsViewSet(viewsets.ModelViewSet):
     serializer_class = DoctorSerializer
     queryset = Doctor.objects.all()
+
+    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsDoctor]
 
     @decorators.action(['POST'], detail=True, url_path='set-on-vacation')
     def set_on_vacation(self, request, pk):

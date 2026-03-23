@@ -15,9 +15,12 @@ class DoctorSerializer(serializers.ModelSerializer):
             first_name__iexact=first_name,
             last_name__iexact=last_name,
             qualification__iexact=qualification
-        ).exists()
+        )
 
-        if patient_exists:
+        if self.instance:
+            patient_exists = patient_exists.exclude(pk=self.instance.pk)
+
+        if patient_exists.exists():
             raise serializers.ValidationError(
                 "Ya existe un doctor con el mismo nombre, apellido y qualificación."
             )
