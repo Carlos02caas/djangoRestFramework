@@ -24,6 +24,16 @@ class DoctorSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Ya existe un doctor con el mismo nombre, apellido y qualificación."
             )
+        
+        if "@example.com" not in data.get("email"):
+            raise serializers.ValidationError(
+                "El email debe contener @example.com"
+            )
+        
+        if (len(data.get("contact_number")) < 10) and data.get("is_on_vacation"):
+            raise serializers.ValidationError(
+                "El número de contacto debe tener al menos 10 dígitos"
+            )
 
         return data
 
