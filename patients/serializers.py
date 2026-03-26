@@ -1,10 +1,23 @@
 from rest_framework import serializers
 from .models import Patient, Insurance, MedicalRecord
+from bookings.serializers import ApointmentSerializer
 
 class PatientSerializer(serializers.ModelSerializer):
+
+    appointment = ApointmentSerializer(many=True, read_only=True)
     class Meta:
         model = Patient
-        fields = '__all__'
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'date_of_birth',
+            'contact_number',
+            'email',
+            'address',
+            'medical_history',
+            'appointment',
+        ]
 
     def validate(self, data):
         first_name = data.get("first_name")
