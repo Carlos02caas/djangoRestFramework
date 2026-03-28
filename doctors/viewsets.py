@@ -2,6 +2,8 @@ from rest_framework import viewsets, decorators, response, permissions
 from .serializers import DoctorSerializer, DepartmentSerializer, DoctorAvailabilitySerializer
 from .models import Doctor, Department, DoctorAvailability
 from .permissions import IsDoctor
+from bookings.serializers import ApointmentSerializer
+from bookings.models import Appointment
 
 class DoctorsViewSet(viewsets.ModelViewSet):
     serializer_class = DoctorSerializer
@@ -31,6 +33,28 @@ class DoctorsViewSet(viewsets.ModelViewSet):
             'status': 'El doctor no esta de vacaciones',
             'doctor': doctor.id
         })
+    
+    @decorators.action(['POST','GET'], detail=True, serializer_class=ApointmentSerializer)
+    def appointments(self, request, pk):
+        doctor = self.get_object()
+        
+
+        if request.method == 'POST':
+            data = request.data.copy()
+            data['doctor'] = doctor.id
+            serializer = ApointmentSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return response.Response({
+                'status': 'Se ha creado un nuevo cita',
+                'appointment': serializer.data
+            }) 
+        if request.method == 'GET':
+            appointments = Appointment.objects.filter(doctor=doctor)
+            serializer = ApointmentSerializer(appointments, many=True)
+            return response.Response({
+                'appointments': serializer.data
+            })
 
 class DepartmentsViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer

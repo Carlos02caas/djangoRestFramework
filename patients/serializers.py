@@ -1,16 +1,19 @@
 from rest_framework import serializers
+from datetime import date
 from .models import Patient, Insurance, MedicalRecord
 from bookings.serializers import ApointmentSerializer
 
 class PatientSerializer(serializers.ModelSerializer):
 
     appointment = ApointmentSerializer(many=True, read_only=True)
+    age = serializers.SerializerMethodField()
     class Meta:
         model = Patient
         fields = [
             'id',
             'first_name',
             'last_name',
+            'age',
             'date_of_birth',
             'contact_number',
             'email',
@@ -18,6 +21,11 @@ class PatientSerializer(serializers.ModelSerializer):
             'medical_history',
             'appointment',
         ]
+
+    def get_age(self, obj):
+        age_td = date.today() - obj.date_of_birth
+        age = age_td.days // 365
+        return f"{age} años"
 
     def validate(self, data):
         first_name = data.get("first_name")
